@@ -28,7 +28,7 @@ namespace PAS_Project.Controllers
             _emailService = emailService;
         }
 
-        // GET: Projects (Main Dashboard)
+        
         public async Task<IActionResult> Index()
         {
             var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
@@ -51,7 +51,7 @@ namespace PAS_Project.Controllers
             return View(await _context.Projects.Include(p => p.Student).Include(p => p.Supervisor).ToListAsync());
         }
 
-        // GET: Supervisor's Accepted Projects Dashboard
+        
         public async Task<IActionResult> MyAcceptedProjects()
         {
             var supervisorIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
@@ -66,7 +66,7 @@ namespace PAS_Project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Projects/MatchDetails/5 (Project Workspace / Milestones)
+        
         public async Task<IActionResult> MatchDetails(int? id)
         {
             if (id == null) return NotFound();
@@ -81,25 +81,22 @@ namespace PAS_Project.Controllers
             return View(project);
         }
 
-        // ==========================================
-        // ALUTH KOTASA: Create GET Method Update
-        // ==========================================
-        // GET: Projects/Create
+       
         public async Task<IActionResult> Create()
         {
-            // Database eke thiyena research areas tika form eke dropdown ekata yawanawa
+           
             ViewBag.ResearchAreas = await _context.ResearchAreas.ToListAsync();
             return View();
         }
 
-        // POST: Projects/Create (File Upload & Default Progress)
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProjectId,Title,Abstract,TechnicalStack,ResearchArea")] Project project, IFormFile? proposalFile)
         {
             if (ModelState.IsValid)
             {
-                // File Upload Logic
+                
                 if (proposalFile != null && proposalFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
@@ -115,7 +112,7 @@ namespace PAS_Project.Controllers
                     project.ProposalFilePath = "/uploads/" + uniqueFileName;
                 }
 
-                // Initial Project Status and Progress
+               
                 project.Status = ProjectStatus.Pending;
                 project.ProgressPercentage = 10;
                 project.CurrentMilestone = "Proposal Submitted";
@@ -131,12 +128,12 @@ namespace PAS_Project.Controllers
                 return RedirectToAction(nameof(Index));
             }
             
-            // Error ekak aawoth ayeth Dropdown eka load wenna ona nisa
+          
             ViewBag.ResearchAreas = await _context.ResearchAreas.ToListAsync();
             return View(project);
         }
 
-        // POST: Supervisor Accepts Project (Auto Email & Auto Milestone Update)
+      
         [HttpPost]
         public async Task<IActionResult> ExpressInterest(int projectId)
         {
@@ -151,14 +148,14 @@ namespace PAS_Project.Controllers
                     project.SupervisorId = supervisorId;
                     project.Status = ProjectStatus.Matched;
                     
-                    // Auto Update Progress when accepted
+                   
                     project.ProgressPercentage = 25;
                     project.CurrentMilestone = "Supervisor Assigned & Planning";
                     
                     _context.Update(project);
                     await _context.SaveChangesAsync();
 
-                    // EMAIL SENDING LOGIC
+                
                     if (project.Student != null && !string.IsNullOrEmpty(project.Student.Email))
                     {
                         string subject = "🎉 Project Proposal Accepted! - NSBM PAS";
@@ -172,7 +169,6 @@ namespace PAS_Project.Controllers
                                 <p style='color: #64748b; font-size: 12px;'>This is an automated message from the NSBM Project Allocation System.</p>
                             </div>";
                         
-                        // Fire and forget mechanism for sending email
                         _ = _emailService.SendEmailAsync(project.Student.Email, subject, body);
                     }
 
@@ -182,7 +178,7 @@ namespace PAS_Project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Update Milestone manually by Supervisor
+       
         [HttpPost]
         public async Task<IActionResult> UpdateMilestone(int projectId, string milestone, int progress)
         {
@@ -191,7 +187,7 @@ namespace PAS_Project.Controllers
             {
                 var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
                 
-                // Security Check: Only Supervisor can update progress
+               
                 if (userRole == "Supervisor")
                 {
                     project.CurrentMilestone = milestone;
@@ -204,7 +200,7 @@ namespace PAS_Project.Controllers
             return RedirectToAction(nameof(MatchDetails), new { id = projectId });
         }
 
-        // GET: Projects/Delete/5
+      
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -213,7 +209,7 @@ namespace PAS_Project.Controllers
             return View(project);
         }
 
-        // POST: Projects/Delete/5
+   
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
