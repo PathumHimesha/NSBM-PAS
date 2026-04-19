@@ -23,13 +23,11 @@ namespace PAS_Project.Models
 
         public string? ProposalFilePath { get; set; }
 
-        // ==========================================
-        // ALUTH FEATURES: Project Progress Tracker
-        // ==========================================
-        public int ProgressPercentage { get; set; } = 10; // Default 10% (Proposal Submitted)
+
+        public int ProgressPercentage { get; set; } = 10; 
         public string? CurrentMilestone { get; set; } = "Proposal Submitted";
 
-        // Relationships
+       
         public int StudentId { get; set; }
         public Student? Student { get; set; }
 
