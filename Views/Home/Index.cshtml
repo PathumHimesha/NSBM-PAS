@@ -1,0 +1,135 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    .hero-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+    .hero-title {
+        font-size: 3.8rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -1.5px;
+        line-height: 1.1;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        margin-bottom: 1.5rem;
+    }
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: #cbd5e1;
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+        max-width: 90%;
+    }
+    
+    .image-composition {
+        position: relative;
+        height: 500px;
+        width: 100%;
+    }
+    .img-main {
+        width: 70%;
+        height: 350px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        position: absolute;
+        right: 0;
+        top: 5%;
+        border: 4px solid rgba(255,255,255,0.15);
+        animation: float 6s ease-in-out infinite;
+    }
+    .img-secondary {
+        width: 60%;
+        height: 280px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        position: absolute;
+        left: 0;
+        bottom: 5%;
+        border: 4px solid rgba(255,255,255,0.15);
+        animation: float 6s ease-in-out infinite reverse;
+    }
+
+    /* ERROR FIX: Added double @@ here */
+    @@keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #34d399;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+        margin-bottom: 2rem;
+        letter-spacing: 0.5px;
+    }
+
+    .status-dot {
+        width: 8px; height: 8px; background-color: #34d399; 
+        border-radius: 50%; margin-right: 8px;
+        box-shadow: 0 0 10px #34d399;
+    }
+</style>
+
+<div class="container hero-container page-transition">
+    <div class="row align-items-center w-100 g-5">
+        
+        <div class="col-lg-6 text-center text-lg-start">
+            
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="status-badge">
+                    <span class="status-dot"></span> Securely Logged In as @User.Identity?.Name
+                </div>
+            }
+            
+            <h1 class="hero-title">Welcome to <br><span style="color: #60a5fa;">NSBM PAS</span></h1>
+            
+            <p class="hero-subtitle">
+                The Next-Generation Project Allocation System.<br>
+                Seamlessly connecting NSBM Students and Supervisors through intelligent matching and automated workflows.
+            </p>
+            
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                @if (User.IsInRole("Student"))
+                {
+                    <a asp-controller="Projects" asp-action="Index" class="btn btn-primary btn-lg fw-bold px-5 py-3" style="border-radius: 12px; background: #2563eb; border: none; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);">Go to My Dashboard</a>
+                }
+                else if (User.IsInRole("Supervisor"))
+                {
+                    <a asp-controller="Projects" asp-action="Index" class="btn btn-success btn-lg fw-bold px-5 py-3" style="border-radius: 12px; background: #10b981; border: none; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);">Review Projects</a>
+                }
+                else if (User.IsInRole("ModuleLeader"))
+                {
+                    <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-warning btn-lg fw-bold px-5 py-3 text-dark" style="border-radius: 12px; background: #fbbf24; border: none; box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);">Admin Portal</a>
+                }
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg fw-bold px-5 py-3" style="border-radius: 12px; background: #2563eb; border: none; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);">Sign In to Continue</a>
+            }
+        </div>
+
+        <div class="col-lg-6 d-none d-lg-block">
+            <div class="image-composition">
+                <img src="https://www.nsbm.ac.lk/wp-content/uploads/2023/05/student_life/DSC_3484.jpg" alt="Campus" class="img-main">
+                <img src="https://www.nsbm.ac.lk/wp-content/uploads/2023/05/student_life/DSCF0734.jpg" alt="Students" class="img-secondary">
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,118 @@
+@{
+    ViewData["Title"] = "My Profile";
+    var defaultAvatar = "https://ui-avatars.com/api/?name=" + ViewBag.Name + "&background=2563eb&color=fff&size=200";
+    var avatarImage = string.IsNullOrEmpty(ViewBag.ProfileImagePath) ? defaultAvatar : ViewBag.ProfileImagePath;
+}
+
+<style>
+    .smooth-card {
+        background: rgba(255, 255, 255, 0.95); border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); padding: 2.5rem;
+        backdrop-filter: blur(5px);
+    }
+    .profile-img-container {
+        width: 150px; height: 150px; border-radius: 50%;
+        overflow: hidden; border: 5px solid #fff;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin: 0 auto 1.5rem auto;
+    }
+    .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
+    .input-soft {
+        background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+        padding: 0.8rem 1.2rem; transition: all 0.2s;
+    }
+    .input-soft:focus {
+        background-color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); outline: none;
+    }
+    .section-title { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+</style>
+
+<div class="container mt-5 mb-5" style="position: relative; z-index: 1;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="smooth-card">
+                
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success border-0 rounded-3 shadow-sm mb-4">
+                        <strong>Success:</strong> @TempData["Success"]
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger border-0 rounded-3 shadow-sm mb-4">
+                        <strong>Error:</strong> @TempData["Error"]
+                    </div>
+                }
+
+                <div class="text-center mb-4">
+                    <div class="profile-img-container">
+                        <img src="@avatarImage" alt="Profile Picture">
+                    </div>
+                    <h2 class="fw-bold text-dark mb-0">@ViewBag.Name</h2>
+                    <p class="text-muted mb-2">@ViewBag.Email | <span class="badge bg-primary">@ViewBag.Role</span></p>
+                </div>
+
+                <hr class="mb-4">
+
+                <h4 class="section-title">Public Information</h4>
+                <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary small">Upload New Avatar</label>
+                        <input type="file" name="profileImage" class="form-control input-soft" accept="image/*">
+                    </div>
+
+                    @if (ViewBag.Role == "Student")
+                    {
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small">GitHub Profile Link</label>
+                                <input type="url" name="github" class="form-control input-soft" value="@ViewBag.GitHubLink" placeholder="https://github.com/username">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small">LinkedIn Profile Link</label>
+                                <input type="url" name="linkedin" class="form-control input-soft" value="@ViewBag.LinkedInLink" placeholder="https://linkedin.com/in/username">
+                            </div>
+                        </div>
+                    }
+                    else if (ViewBag.Role == "Supervisor")
+                    {
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary small">Professional Bio</label>
+                            <textarea name="bio" class="form-control input-soft" rows="3" placeholder="Short description about your expertise...">@ViewBag.Bio</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary small">LinkedIn Profile Link</label>
+                            <input type="url" name="linkedin" class="form-control input-soft" value="@ViewBag.LinkedInLink">
+                        </div>
+                    }
+
+                    <div class="text-end mb-5">
+                        <button type="submit" class="btn btn-primary fw-bold px-4 py-2" style="border-radius: 10px;">Save Profile Updates</button>
+                    </div>
+                </form>
+
+                <h4 class="section-title text-danger">Security Settings</h4>
+                <form asp-action="ChangePassword" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-secondary small">Current Password (or Temporary Password)</label>
+                            <input type="password" name="currentPassword" class="form-control input-soft" placeholder="Enter your current password" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary small">New Password</label>
+                            <input type="password" name="newPassword" class="form-control input-soft" placeholder="Create a new password" required minlength="4">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary small">Confirm New Password</label>
+                            <input type="password" name="confirmPassword" class="form-control input-soft" placeholder="Re-type new password" required minlength="4">
+                        </div>
+                    </div>
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-dark fw-bold px-4 py-2" style="border-radius: 10px;">Change Password 🔐</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

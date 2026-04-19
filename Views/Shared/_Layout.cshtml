@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NSBM PAS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            filter: blur(12px) brightness(0.35);
+            z-index: -10;
+        }
+
+        @@keyframes smoothFade {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-transition {
+            animation: smoothFade 0.6s ease-in-out forwards;
+        }
+
+        .navbar-glass {
+            background: rgba(15, 23, 42, 0.5) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .navbar-glass .navbar-brand {
+            color: #ffffff !important;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s;
+        }
+        .navbar-glass .nav-link {
+            color: #e2e8f0 !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+        .navbar-glass .nav-link:hover {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .nav-link-admin {
+            color: #fbbf24 !important; 
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        .nav-link-admin:hover { background: rgba(251, 191, 36, 0.2) !important; }
+        
+        .nav-link-user {
+            color: #60a5fa !important; 
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+        .nav-link-user:hover { background: rgba(96, 165, 250, 0.2) !important; }
+
+        .nav-link-success {
+            color: #10b981 !important; 
+            background: rgba(16, 185, 129, 0.1); 
+            border: 1px solid rgba(16, 185, 129, 0.2); 
+            margin-left: 8px;
+        }
+        .nav-link-success:hover { background: rgba(16, 185, 129, 0.2) !important; }
+
+        main { flex: 1; position: relative; z-index: 1; }
+
+        .footer-glass {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        
+        /* Contact Link Hover Effect */
+        .footer-contact-link {
+            color: #60a5fa;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: color 0.2s ease;
+        }
+        .footer-contact-link:hover {
+            color: #93c5fd;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-glass mb-4">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Project Allocation System</a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    
+                    <ul class="navbar-nav flex-grow-1 gap-2 ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("ModuleLeader"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-admin fw-bold" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-admin fw-bold ms-1" asp-controller="Admin" asp-action="Allocations">Allocation Oversight</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-admin fw-bold ms-1" asp-controller="Admin" asp-action="ResearchAreas">Research Areas</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Student"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-user fw-bold" asp-controller="Projects" asp-action="Index">Student Dashboard</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Supervisor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-user fw-bold" asp-controller="Projects" asp-action="Index">Review Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-success fw-bold" asp-controller="Projects" asp-action="MyAcceptedProjects">My Accepted Projects</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav align-items-center gap-3">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item d-flex align-items-center gap-3">
+                                <a asp-controller="Profile" asp-action="Index" class="text-light text-decoration-none small fw-bold" style="background: rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+                                    👤 My Profile
+                                </a>
+                                <span class="text-light opacity-75 small">Welcome, <strong>@User.Identity.Name!</strong></span>
+                            </li>
+                            <li class="nav-item ms-2">
+                                <form class="form-inline m-0" asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm fw-bold px-3 py-1" style="border-radius: 8px;">Sign Out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-sm fw-bold px-4 py-2" style="border-radius: 8px; background: #2563eb; border: none;" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container page-transition">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer-glass text-center">
+        <div class="container d-flex flex-column gap-2 py-2">
+            <div>
+                &copy; 2026 - NSBM Project Allocation System (PAS)
+            </div>
+            <div class="small">
+                <span class="text-light opacity-75">For Support & Inquiries, Contact Admin: </span>
+                <a href="mailto:prasadhphs@gmail.com" class="fw-bold footer-contact-link">prasadhphs@gmail.com</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

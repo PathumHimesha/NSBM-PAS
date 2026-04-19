@@ -1,0 +1,46 @@
+@model PAS_Project.Models.Supervisor
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                    <h3 class="mb-0"><i class="bi bi-person-badge"></i> Supervisor Expertise Profile</h3>
+                    <p class="mb-0 text-light opacity-75">Update your research areas to get better project matches.</p>
+                </div>
+                <div class="card-body p-5">
+                    <form asp-action="Profile">
+                        <input type="hidden" asp-for="SupervisorId" />
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted">Full Name</label>
+                                <input asp-for="Name" class="form-control form-control-lg bg-light" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted">Email Address</label>
+                                <input asp-for="Email" class="form-control form-control-lg bg-light" readonly />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark fs-5">Preferred Research Areas</label>
+                            <div class="form-text text-muted mb-2">Separate multiple tags with commas (e.g., Artificial Intelligence, Machine Learning, Web Development)</div>
+                            <textarea asp-for="PreferredResearchAreas" class="form-control border-primary shadow-sm" rows="3" placeholder="e.g., Cybersecurity, Cloud Computing"></textarea>
+                            <span asp-validation-for="PreferredResearchAreas" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                            <a asp-action="Dashboard" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Cancel</a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill shadow">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
