@@ -13,9 +13,7 @@ namespace PAS_Project.Models
         [Required, EmailAddress] 
         public string Email { get; set; }
         
-        // ==========================================
-        // ALUTH FEATURES: Profile Management
-        // ==========================================
+
         public string? ProfileImagePath { get; set; }
         public string? GitHubLink { get; set; }
         public string? LinkedInLink { get; set; }
