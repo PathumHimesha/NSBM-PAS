@@ -10,16 +10,14 @@ using System.Text;
 namespace PAS_Project.Controllers {
     public class AccountController : Controller {
         private readonly ApplicationDbContext _context;
-        private readonly IEmailService _emailService; // Email service eka link karanawa
+        private readonly IEmailService _emailService; 
 
         public AccountController(ApplicationDbContext context, IEmailService emailService) {
             _context = context;
             _emailService = emailService;
         }
 
-        // ==========================================
-        // PASSWORD HASHING METHOD (Security)
-        // ==========================================
+       
         private string HashPassword(string password) {
             using (var sha256 = SHA256.Create()) {
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -40,13 +38,13 @@ namespace PAS_Project.Controllers {
             email = email.ToLower().Trim(); 
             string hashedPassword = HashPassword(password);
 
-            // 1. Admin/Module Leader Check
+            
             var admin = await _context.ModuleLeaders.FirstOrDefaultAsync(a => a.Email == email);
             if (admin != null && (admin.Password == hashedPassword || admin.Password == null)) {
                 claims.AddRange(new[] { new Claim(ClaimTypes.Name, admin.Name), new Claim("UserId", admin.ModuleLeaderId.ToString()), new Claim(ClaimTypes.Role, "ModuleLeader") });
                 if(admin.Password == null) { admin.Password = hashedPassword; await _context.SaveChangesAsync(); } // Save first time password
             }
-            // 2. STUDENT CHECK
+            
             else if (email.EndsWith("@students.nsbm.ac.lk")) {
                 var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == email);
                 if (student != null && (student.Password == hashedPassword || student.Password == null)) {
@@ -54,7 +52,7 @@ namespace PAS_Project.Controllers {
                     if(student.Password == null) { student.Password = hashedPassword; await _context.SaveChangesAsync(); }
                 } 
             } 
-            // 3. SUPERVISOR CHECK
+            
             else if (email.EndsWith("@nsbm.ac.lk")) {
                 var supervisor = await _context.Supervisors.FirstOrDefaultAsync(s => s.Email == email);
                 if (supervisor != null && (supervisor.Password == hashedPassword || supervisor.Password == null)) {
@@ -73,9 +71,7 @@ namespace PAS_Project.Controllers {
             return View();
         }
 
-        // ==========================================
-        // FORGOT PASSWORD LOGIC
-        // ==========================================
+
         [HttpGet] public IActionResult ForgotPassword() => View();
 
         [HttpPost]
@@ -99,7 +95,7 @@ namespace PAS_Project.Controllers {
             if(sup != null) { sup.Password = hashedTempPassword; accountFound = true; userName = sup.Name; }
 
             if(accountFound) {
-                await _context.SaveChangesAsync(); // Update new temp password in DB
+                await _context.SaveChangesAsync(); 
                 
                 string subject = "🔐 Password Reset Request - NSBM PAS";
                 string body = $@"
