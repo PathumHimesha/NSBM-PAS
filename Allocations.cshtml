@@ -1,0 +1,48 @@
+@model IEnumerable<PAS_Project.Models.Project>
+@{
+    ViewData["Title"] = "Allocation Oversight";
+}
+
+<div class="container mt-4 mb-5" style="position: relative; z-index: 1;">
+    <div class="card shadow-lg border-0" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 16px;">
+        <div class="card-body p-4">
+            <h2 class="fw-bold text-dark mb-4">👥 Allocation Oversight</h2>
+            <p class="text-muted">A comprehensive view of all matched students and their assigned supervisors.</p>
+
+            <div class="table-responsive mt-4">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Project Title</th>
+                            <th>Student</th>
+                            <th>Assigned Supervisor</th>
+                            <th>Current Milestone</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">@item.Title</td>
+                                <td>@(item.Student?.Name ?? "Unknown")</td>
+                                <td><span class="badge bg-success">@(item.Supervisor?.Name ?? "Unknown")</span></td>
+                                <td>@item.CurrentMilestone</td>
+                                <td>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: @item.ProgressPercentage%;" aria-valuenow="@item.ProgressPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small class="text-muted">@item.ProgressPercentage%</small>
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.Any())
+                        {
+                            <tr><td colspan="5" class="text-center text-muted p-4">No allocations found yet.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
