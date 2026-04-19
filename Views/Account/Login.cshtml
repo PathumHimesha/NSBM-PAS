@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Secure Login";
+}
+
+<style>
+    .login-container { min-height: 75vh; display: flex; align-items: center; justify-content: center; }
+    .login-glass {
+        background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+        border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 3.5rem 3rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); width: 100%; max-width: 420px;
+    }
+    .input-premium {
+        background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+        padding: 1rem 1.2rem; font-size: 1rem; color: #1e293b; margin-bottom: 1rem; transition: all 0.2s ease;
+    }
+    .input-premium:focus {
+        background-color: #ffffff; border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); outline: none;
+    }
+    .btn-login {
+        background-color: #0f172a; color: white; border: none; border-radius: 12px;
+        padding: 1rem; font-weight: 700; width: 100%; letter-spacing: 1px; transition: all 0.3s ease; margin-top: 1rem;
+    }
+    .btn-login:hover { background-color: #1e293b; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    .forgot-link { font-size: 0.9rem; color: #3b82f6; text-decoration: none; font-weight: 600; }
+    .forgot-link:hover { text-decoration: underline; color: #2563eb; }
+</style>
+
+<div class="container login-container">
+    <div class="login-glass text-center">
+        <div class="mb-4 pb-2">
+            <h2 class="fw-bold" style="color: #0f172a; letter-spacing: -0.5px;">Portal Login</h2>
+        </div>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger text-start shadow-sm mb-4" style="border-radius: 10px; font-size: 0.9rem;">
+                @TempData["Error"]
+            </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success text-start shadow-sm mb-4" style="border-radius: 10px; font-size: 0.9rem;">
+                @TempData["Success"]
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div class="form-group text-start">
+                <input type="email" name="email" class="form-control input-premium" placeholder="Institutional Email" required autocomplete="email" />
+            </div>
+            <div class="form-group text-start">
+                <input type="password" name="password" class="form-control input-premium" placeholder="Password" required />
+            </div>
+
+            <div class="text-end mb-3">
+                <a asp-action="ForgotPassword" class="forgot-link">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">SECURE LOGIN</button>
+        </form>
+    </div>
+</div>
