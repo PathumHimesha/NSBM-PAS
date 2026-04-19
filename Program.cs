@@ -5,19 +5,17 @@ using PAS_Project.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
-// 1. Database Configuration
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ==========================================
-// ALUTH: Email Service eka system ekata add kireema
-// ==========================================
+
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-// 2. Security: Cookie Authentication
+
 builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth", options =>
     {
