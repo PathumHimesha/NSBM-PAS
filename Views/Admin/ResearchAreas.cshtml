@@ -1,0 +1,63 @@
+@model IEnumerable<PAS_Project.Models.ResearchArea>
+@{
+    ViewData["Title"] = "Manage Research Areas";
+}
+
+<div class="container mt-4 mb-5" style="position: relative; z-index: 1;">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 mb-4" style="background: rgba(255, 255, 255, 0.95); border-radius: 16px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-dark">➕ Add New Area</h4>
+                    <p class="text-muted small">Define a new valid research area for the system.</p>
+                    
+                    @if (TempData["Success"] != null) {
+                        <div class="alert alert-success py-2">@TempData["Success"]</div>
+                    }
+
+                    <form asp-action="AddResearchArea" method="post">
+                        <div class="form-group mb-3">
+                            <input type="text" name="name" class="form-control" required />
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 fw-bold" style="border-radius: 8px;">Add Area</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-lg border-0" style="background: rgba(255, 255, 255, 0.95); border-radius: 16px;">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-dark mb-3">🏷️ Current Research Areas</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tag Name</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var area in Model)
+                                {
+                                    <tr>
+                                        <td class="fw-bold text-secondary">@area.Name</td>
+                                        <td class="text-end">
+                                            <form asp-action="DeleteResearchArea" method="post" onsubmit="return confirm('Are you sure you want to delete this research area?');">
+                                                <input type="hidden" name="id" value="@area.Id" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (!Model.Any()) {
+                                    <tr><td colspan="2" class="text-center text-muted">No research areas defined yet.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
