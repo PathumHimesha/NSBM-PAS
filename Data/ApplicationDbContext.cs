@@ -14,5 +14,8 @@ namespace PAS_Project.Data
         public DbSet<Supervisor> Supervisors { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ModuleLeader> ModuleLeaders { get; set; }
+        
+        // ALUTH: Research Areas Table eka
+        public DbSet<ResearchArea> ResearchAreas { get; set; } 
     }
 }

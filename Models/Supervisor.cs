@@ -15,7 +15,9 @@ namespace PAS_Project.Models
         
         public string? PreferredResearchAreas { get; set; } 
         
-
+        // ==========================================
+        // ALUTH FEATURES: Profile Management
+        // ==========================================
         public string? ProfileImagePath { get; set; }
         public string? LinkedInLink { get; set; }
         public string? Bio { get; set; }
