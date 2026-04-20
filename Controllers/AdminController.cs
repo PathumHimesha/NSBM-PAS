@@ -18,16 +18,11 @@ namespace PAS_Project.Controllers
             _context = context;
         }
 
-        // ==========================================
-        // MAIN DASHBOARD (With Users & Stat Cards Data)
-        // ==========================================
         public async Task<IActionResult> Dashboard()
         {
-            // For Student/Supervisor Lists
             ViewBag.Students = await _context.Students.ToListAsync();
             ViewBag.Supervisors = await _context.Supervisors.ToListAsync();
 
-            // For Stat Cards in UI
             ViewBag.TotalStudents = await _context.Students.CountAsync();
             ViewBag.TotalSupervisors = await _context.Supervisors.CountAsync();
             ViewBag.PendingProjects = await _context.Projects.CountAsync(p => p.Status == ProjectStatus.Pending);
@@ -36,9 +31,6 @@ namespace PAS_Project.Controllers
             return View();
         }
 
-        // ==========================================
-        // STUDENT & SUPERVISOR CRUD OPERATIONS
-        // ==========================================
         [HttpPost]
         public async Task<IActionResult> AddStudent(string name, string email)
         {
@@ -133,30 +125,49 @@ namespace PAS_Project.Controllers
             var student = await _context.Students.FindAsync(id);
             if (student != null)
             {
+                var linkedProjects = await _context.Projects.Where(p => p.StudentId == id).ToListAsync();
+                if (linkedProjects.Any())
+                {
+                    _context.Projects.RemoveRange(linkedProjects);
+                }
+
                 _context.Students.Remove(student);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Student deleted successfully!";
             }
             return RedirectToAction("Dashboard");
         }
 
+     
         [HttpPost]
         public async Task<IActionResult> DeleteSupervisor(int id)
         {
             var supervisor = await _context.Supervisors.FindAsync(id);
             if (supervisor != null)
             {
+                
+                var linkedProjects = await _context.Projects.Where(p => p.SupervisorId == id).ToListAsync();
+
+                foreach (var project in linkedProjects)
+                {
+                    project.SupervisorId = null; 
+                    project.Status = ProjectStatus.Pending; 
+                    project.CurrentMilestone = "Supervisor Removed. Waiting for new allocation.";
+                }
+
+              
                 _context.Supervisors.Remove(supervisor);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Supervisor deleted successfully!";
             }
             return RedirectToAction("Dashboard");
         }
 
         // ==========================================
-        // ALUTH 1: ALLOCATION OVERSIGHT
+        // ALLOCATION OVERSIGHT
         // ==========================================
         public async Task<IActionResult> Allocations()
         {
-            // Get all projects that are currently matched
             var matches = await _context.Projects
                 .Include(p => p.Student)
                 .Include(p => p.Supervisor)
@@ -166,9 +177,6 @@ namespace PAS_Project.Controllers
             return View(matches);
         }
 
-        // ==========================================
-        // ALUTH 2: RESEARCH AREA MANAGEMENT
-        // ==========================================
         public async Task<IActionResult> ResearchAreas()
         {
             var areas = await _context.ResearchAreas.ToListAsync();
