@@ -24,9 +24,7 @@ namespace PAS_Project.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // ==========================================
-        // PASSWORD HASHING METHOD 
-        // ==========================================
+        
         private string HashPassword(string password) {
             using (var sha256 = SHA256.Create()) {
                 var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -34,7 +32,7 @@ namespace PAS_Project.Controllers
             }
         }
 
-        // GET: Profile Dashboard
+        
         public async Task<IActionResult> Index()
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
@@ -66,7 +64,7 @@ namespace PAS_Project.Controllers
                     var admin = await _context.ModuleLeaders.FindAsync(id);
                     ViewBag.Name = admin.Name;
                     ViewBag.Email = admin.Email;
-                    // අලුතෙන් එකතු කරපු කෑල්ල (Admin ගේ පින්තූරෙ Load වෙන්න)
+                     
                     ViewBag.ProfileImagePath = admin.ProfileImagePath; 
                 }
                 return View();
@@ -74,7 +72,7 @@ namespace PAS_Project.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // POST: Update Profile Details & Avatar
+       
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(string? github, string? linkedin, string? bio, IFormFile? profileImage)
         {
@@ -85,7 +83,7 @@ namespace PAS_Project.Controllers
             {
                 string? imagePath = null;
                 
-                // Image Upload Logic
+                 
                 if (profileImage != null && profileImage.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/profiles");
@@ -100,7 +98,7 @@ namespace PAS_Project.Controllers
                     imagePath = "/uploads/profiles/" + uniqueFileName;
                 }
 
-                // Update Based on Role
+                
                 if (role == "Student")
                 {
                     var student = await _context.Students.FindAsync(id);
@@ -123,7 +121,7 @@ namespace PAS_Project.Controllers
                 }
                 else if (role == "ModuleLeader")
                 {
-                    // අලුතෙන් එකතු කරපු කෑල්ල (Admin ගේ පින්තූරෙ Database එකේ Save වෙන්න)
+                    
                     var admin = await _context.ModuleLeaders.FindAsync(id);
                     if (admin != null) {
                         if (imagePath != null) admin.ProfileImagePath = imagePath;
@@ -137,9 +135,7 @@ namespace PAS_Project.Controllers
             return RedirectToAction("Index");
         }
 
-        // ==========================================
-        // Change Password Logic
-        // ==========================================
+         
         [HttpPost]
         public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
